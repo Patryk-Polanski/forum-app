@@ -4,6 +4,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 import SignIn from "@/components/SignIn";
+import { ChevronLeft } from "lucide-react";
 
 export default function SignInPage() {
   return (
@@ -16,7 +17,7 @@ export default function SignInPage() {
             "self-start -mt-20"
           )}
         >
-          Home
+          <ChevronLeft className="mr-2 h-4 w-4" /> Home
         </Link>
         <SignIn />
       </div>
