@@ -1,11 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { signIn } from "next-auth/react";
 
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 import { Button } from "./ui/Button";
-import { useState } from "react";
 import { Icons } from "./Icons";
 
 // extending our interface with HTMLDivElement so that we can add all properties that exist on "div"
@@ -16,14 +17,20 @@ export default function UserAuthForm({
   ...props
 }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { toast } = useToast();
 
   const loginWithGoogle = async () => {
     setIsLoading(true);
 
     try {
+      throw new Error();
       await signIn("google");
     } catch (error) {
-      // toast notification
+      toast({
+        title: "There was a problem",
+        description: "There was an error loggin in with Google",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
