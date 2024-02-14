@@ -4,6 +4,7 @@ import { getAuthSession } from "@/lib/auth";
 
 import { Icons } from "./Icons";
 import { buttonVariants } from "./ui/Button";
+import UserAccountNav from "./UserAccountNav";
 
 export default async function NavBar() {
   const session = await getAuthSession();
@@ -21,8 +22,8 @@ export default async function NavBar() {
 
         {/* search bar */}
 
-        {session ? (
-          <p>You are logged in</p>
+        {session?.user ? (
+          <UserAccountNav user={session.user} />
         ) : (
           <Link href="/sign-in" className={buttonVariants()}>
             Sign In
