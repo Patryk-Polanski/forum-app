@@ -6,13 +6,16 @@ import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { toast } from "@/hooks/use-toast";
 
+import { CreateSubredditPayload } from "@/lib/validators/subreddit";
+import useCustomToast from "@/hooks/use-custom-toast";
+
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { CreateSubredditPayload } from "@/lib/validators/subreddit";
 
 export default function CreatePage() {
   const [input, setInput] = useState("");
   const router = useRouter();
+  const { loginToast } = useCustomToast();
 
   const { mutate: createCommunity, isLoading } = useMutation({
     mutationFn: async () => {
@@ -34,20 +37,25 @@ export default function CreatePage() {
 
         if (err.response?.status === 422) {
           return toast({
-            title: "Invalida subreddit name",
+            title: "Invalid subreddit name",
             description: "Please choose a name between 3 and 21 characters",
             variant: "destructive",
           });
         }
 
         if (err.response?.status === 401) {
-          return toast({
-            title: "Unauthorised access",
-            description: "Please login to create a community",
-            variant: "destructive",
-          });
+          return loginToast();
         }
       }
+
+      toast({
+        title: "There was an error",
+        description: "Could nto create subreddit Please try again later",
+        variant: "destructive",
+      });
+    },
+    onSuccess: (data) => {
+      router.push(`/r/${data}`);
     },
   });
 
