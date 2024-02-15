@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+import { toast } from "@/hooks/use-toast";
 
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
@@ -20,6 +21,33 @@ export default function CreatePage() {
       };
       const { data } = await axios.post("/api/subreddit", payload);
       return data as string;
+    },
+    onError: (err) => {
+      if (err instanceof AxiosError) {
+        if (err.response?.status === 409) {
+          return toast({
+            title: "Subreddit already exists",
+            description: "Please choose a different subreddit name",
+            variant: "destructive",
+          });
+        }
+
+        if (err.response?.status === 422) {
+          return toast({
+            title: "Invalida subreddit name",
+            description: "Please choose a name between 3 and 21 characters",
+            variant: "destructive",
+          });
+        }
+
+        if (err.response?.status === 401) {
+          return toast({
+            title: "Unauthorised access",
+            description: "Please login to create a community",
+            variant: "destructive",
+          });
+        }
+      }
     },
   });
 
