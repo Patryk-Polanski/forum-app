@@ -4,6 +4,8 @@ import { format } from "date-fns";
 
 import { db } from "@/lib/db";
 
+import SubscribeLeaveToggle from "@/components/SubscribeLeaveToggle";
+
 export default async function layout({
   children,
   params: { slug },
@@ -81,6 +83,10 @@ export default async function layout({
                 <div className="flex justify-between gap-x-4 py-3">
                   <p className="text-gray-500">You created this community</p>
                 </div>
+              ) : null}
+
+              {subreddit.creatorId !== session?.user.id ? (
+                <SubscribeLeaveToggle />
               ) : null}
             </dl>
           </div>
