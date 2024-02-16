@@ -44,6 +44,7 @@ export default async function SubredditPage({ params }: PageProps) {
         r/{subreddit.name}
       </h1>
       <MiniCreatePost session={session} />
+      {/* TODO: show posts in user feed */}
     </>
   );
 }
