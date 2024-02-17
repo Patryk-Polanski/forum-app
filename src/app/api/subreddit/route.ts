@@ -50,7 +50,7 @@ export async function POST(req: Request) {
     }
 
     // handle all other errors
-    return new Response("Could not create subreddit. Try agin later.", {
+    return new Response("Could not create subreddit. Try again later.", {
       status: 500,
     });
   }

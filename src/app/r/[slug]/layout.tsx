@@ -86,7 +86,11 @@ export default async function layout({
               ) : null}
 
               {subreddit.creatorId !== session?.user.id ? (
-                <SubscribeLeaveToggle />
+                <SubscribeLeaveToggle
+                  subredditId={subreddit.id}
+                  isSubscribed={isSubscribed}
+                  subredditName={subreddit.name}
+                />
               ) : null}
             </dl>
           </div>
