@@ -141,7 +141,7 @@ export default function Editor({ subredditId }: EditorProps) {
         content,
         subredditId,
       };
-      const { data } = await axios.post("/api/subreddit/post/create");
+      const { data } = await axios.post("/api/subreddit/post/create", payload);
       return data;
     },
     onError: () => {
