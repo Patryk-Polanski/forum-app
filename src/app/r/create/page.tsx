@@ -50,7 +50,7 @@ export default function CreatePage() {
 
       toast({
         title: "There was an error",
-        description: "Could nto create subreddit Please try again later",
+        description: "Could not create subreddit Please try again later",
         variant: "destructive",
       });
     },

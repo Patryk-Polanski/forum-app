@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import TextAreaAutosize from "react-textarea-autosize";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,6 +13,9 @@ interface EditorProps {
 }
 
 export default function Editor({ subredditId }: EditorProps) {
+  const ref = useRef<EditorJS>();
+  const [isMounted, setIsMounted] = useState<boolean>(false);
+
   const {
     register,
     handleSubmit,
@@ -25,8 +28,6 @@ export default function Editor({ subredditId }: EditorProps) {
       content: null,
     },
   });
-
-  const ref = useRef<EditorJS>();
 
   const initializeEditor = useCallback(async () => {
     const EditorJS = (await import("@editorjs/editorjs")).default;
@@ -73,10 +74,37 @@ export default function Editor({ subredditId }: EditorProps) {
               },
             },
           },
+          list: List,
+          code: Code,
+          InlineCode: InlineCode,
+          table: Table,
+          embed: Embed,
         },
       });
     }
   }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsMounted(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    const init = async () => {
+      await initializeEditor();
+
+      setTimeout(() => {
+        // set focus to title
+      }, 0);
+    };
+
+    if (isMounted) {
+      init();
+
+      return () => {};
+    }
+  }, [isMounted, initializeEditor]);
 
   return (
     <div className="w-full p-4 bg-zinc-50 rounded-lg border border-zinc-200">
@@ -86,6 +114,7 @@ export default function Editor({ subredditId }: EditorProps) {
             placeholder="Title"
             className="w-full resize-none appearance-none overflow-hidden bg-transparent text-5xl font-bold focus:outline-none"
           />
+          <div id="editor" className="min-h-[500px]" />
         </div>
       </form>
     </div>
