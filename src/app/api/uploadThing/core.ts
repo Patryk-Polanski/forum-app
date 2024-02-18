@@ -5,6 +5,7 @@ const f = createUploadthing();
 
 export const ourFileRouter = {
   imageUploader: f({ image: { maxFileSize: "4MB" } })
+    // Set permissions and file types for this FileRoute
     .middleware(async (req) => {
       const user = await getToken({ req });
 
