@@ -1,13 +1,13 @@
 "use client";
 
+import { useCallback, useRef } from "react";
 import { useForm } from "react-hook-form";
 import TextAreaAutosize from "react-textarea-autosize";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type EditorJS from "@editorjs/editorjs";
 
 import { PostCreationRequest, PostValidator } from "@/lib/validators/post";
-import { useCallback, useRef } from "react";
-
+import { uploadFiles } from "@/lib/uploadThing";
 interface EditorProps {
   subredditId: string;
 }
@@ -54,6 +54,23 @@ export default function Editor({ subredditId }: EditorProps) {
             class: LinkTool,
             config: {
               endpoint: "/api/link",
+            },
+          },
+          image: {
+            class: ImageTool,
+            config: {
+              uploader: {
+                async uploadByFile(file: File) {
+                  const [res] = await uploadFiles([file], "imageUploader");
+
+                  return {
+                    success: 1,
+                    file: {
+                      url: res.fileUrl,
+                    },
+                  };
+                },
+              },
             },
           },
         },
