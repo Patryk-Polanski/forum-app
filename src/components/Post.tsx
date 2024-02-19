@@ -6,23 +6,35 @@ import { ExtendedPost } from "@/types/db";
 import { MessageSquare } from "lucide-react";
 
 import EditorOutput from "./EditorOutput";
+import PostVoteClient from "./post-vote/PostVoteClient";
+import { Vote } from "@prisma/client";
+
+type PartialVote = Pick<Vote, "type">;
 
 interface PostProps {
   subredditName: string;
   post: ExtendedPost;
   commentAmount: number;
+  votesAmount: number;
+  currentVote?: PartialVote;
 }
 
 export default function Post({
   subredditName,
   post,
   commentAmount,
+  votesAmount,
+  currentVote,
 }: PostProps) {
   const postRef = useRef<HTMLDivElement>(null);
   return (
     <div className="rounded-md bg-white shadow">
       <div className="px-6 py-4 flex justify-between">
-        {/* TODO: display votes */}
+        <PostVoteClient
+          postId={post.id}
+          initialVote={currentVote?.type}
+          initialVotesAmount={votesAmount}
+        />
 
         <div className="w-0 flex-1">
           <div className="max-h-40 mt-1 text-xs text-gray-500">
@@ -45,7 +57,6 @@ export default function Post({
               {post.title}
             </h2>
           </a>
-
           <div
             className="relative text-sm max-h-40 w-full overflow-clip"
             ref={postRef}
@@ -56,6 +67,7 @@ export default function Post({
               <div className="absolute bottom-0 left-0 h-24 w-full bg-gradient-to-t from-white to-transparent"></div>
             ) : null}
           </div>
+          P
         </div>
       </div>
 

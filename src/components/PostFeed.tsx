@@ -50,7 +50,7 @@ export default function PostFeed({
   return (
     <ul className="flex flex-col col-span-2 space-y-6">
       {posts.map((post: ExtendedPost, index: number) => {
-        const votesAmt = post.votes.reduce((acc, vote) => {
+        const votesAmount = post.votes.reduce((acc, vote) => {
           if (vote.type === "UP") return acc + 1;
           if (vote.type === "DOWN") return acc - 1;
           return acc;
@@ -67,6 +67,8 @@ export default function PostFeed({
                 post={post}
                 subredditName={post.subreddit.name}
                 commentAmount={post.comments.length}
+                currentVote={currentVote}
+                votesAmount={votesAmount}
               />
             </li>
           );
@@ -77,6 +79,8 @@ export default function PostFeed({
                 post={post}
                 subredditName={post.subreddit.name}
                 commentAmount={post.comments.length}
+                currentVote={currentVote}
+                votesAmount={votesAmount}
               />
             </li>
           );
