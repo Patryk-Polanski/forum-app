@@ -9,6 +9,8 @@ import { INFINITE_SCROLLING_PAGINATION_RESULTS } from "@/config";
 import { type ExtendedPost } from "@/types/db";
 import { type Vote } from "@prisma/client";
 
+import Post from "./Post";
+
 interface PostFeedProps {
   initialPosts: ExtendedPost[];
   subredditName?: string;
@@ -58,7 +60,27 @@ export default function PostFeed({
           (vote: Vote) => vote.userId === session?.user.id
         );
 
-        return <div></div>;
+        if (index === posts.length - 1) {
+          return (
+            <li key={post.id} ref={ref}>
+              <Post
+                post={post}
+                subredditName={post.subreddit.name}
+                commentAmount={post.comments.length}
+              />
+            </li>
+          );
+        } else {
+          return (
+            <li key={post.id}>
+              <Post
+                post={post}
+                subredditName={post.subreddit.name}
+                commentAmount={post.comments.length}
+              />
+            </li>
+          );
+        }
       })}
     </ul>
   );
