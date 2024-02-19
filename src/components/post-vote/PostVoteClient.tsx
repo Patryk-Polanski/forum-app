@@ -3,11 +3,15 @@
 import { useEffect, useState } from "react";
 import useCustomToast from "@/hooks/use-custom-toast";
 import { usePrevious } from "@mantine/hooks";
+import axios from "axios";
 import { type VoteType } from "@prisma/client";
+import { useMutation } from "@tanstack/react-query";
+import { ArrowBigDown, ArrowBigUp } from "lucide-react";
+
 import { cn } from "@/lib/utils";
+import { PostVoteRequest } from "@/lib/validators/vote";
 
 import { Button } from "../ui/Button";
-import { ArrowBigDown, ArrowBigUp } from "lucide-react";
 
 interface PostVoteClientProps {
   postId: string;
@@ -29,6 +33,17 @@ export default function PostVoteClient({
     // sometimes initially current vote might be undefined, so re-run the code below when initialVote changes
     setCurrentVote(initialVote);
   }, [initialVote]);
+
+  const {} = useMutation({
+    mutationFn: async (voteType: VoteType) => {
+      const payload: PostVoteRequest = {
+        postId,
+        voteType,
+      };
+
+      await axios.patch("/api/subreddit/post/vote", payload);
+    },
+  });
 
   return (
     <div className="flex sm:flex-col gap-4 sm:gap-0 pr-6 sm:w-20 pb-4 sm:pb-0">
