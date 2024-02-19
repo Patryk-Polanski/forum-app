@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 import { INFINITE_SCROLLING_PAGINATION_RESULTS } from "@/config";
 
 import MiniCreatePost from "@/components/MiniCreatePost";
-
+import PostFeed from "@/components/PostFeed";
 interface PageProps {
   params: {
     slug: string;
@@ -44,7 +44,7 @@ export default async function SubredditPage({ params }: PageProps) {
         r/{subreddit.name}
       </h1>
       <MiniCreatePost session={session} />
-      {/* TODO: show posts in user feed */}
+      <PostFeed />
     </>
   );
 }
