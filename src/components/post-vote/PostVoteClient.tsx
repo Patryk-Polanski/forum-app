@@ -34,7 +34,7 @@ export default function PostVoteClient({
     setCurrentVote(initialVote);
   }, [initialVote]);
 
-  const {} = useMutation({
+  const { mutate: vote } = useMutation({
     mutationFn: async (voteType: VoteType) => {
       const payload: PostVoteRequest = {
         postId,
@@ -49,6 +49,7 @@ export default function PostVoteClient({
     <div className="flex sm:flex-col gap-4 sm:gap-0 pr-6 sm:w-20 pb-4 sm:pb-0">
       <Button size="sm" variant="ghost" aria-label="upvote">
         <ArrowBigUp
+          onClick={() => vote("UP")}
           className={cn("h-5 w-5 text-zinc-700", {
             "text-emerald-500 fill-emerald-500": currentVote === "UP",
           })}
@@ -59,6 +60,7 @@ export default function PostVoteClient({
       </p>
       <Button size="sm" variant="ghost" aria-label="downvote">
         <ArrowBigDown
+          onClick={() => vote("DOWN")}
           className={cn("h-5 w-5 text-zinc-700", {
             "text-red-500 fill-red-500": currentVote === "DOWN",
           })}

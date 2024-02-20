@@ -1,8 +1,11 @@
+import { z } from "zod";
+
 import { db } from "@/lib/db";
 import { getAuthSession } from "@/lib/auth";
 import { PostVoteValidator } from "@/lib/validators/vote";
 import { CACHE_AFTER_UPVOTES } from "@/config";
 import { type CachedPost } from "@/types/redis";
+import { redis } from "@/lib/reddis";
 
 export async function PATCH(req: Request) {
   try {
@@ -70,8 +73,56 @@ export async function PATCH(req: Request) {
       }, 0);
 
       if (votesAmount >= CACHE_AFTER_UPVOTES) {
-        const cachePayload: CachedPost = {};
+        const cachePayload: CachedPost = {
+          authorUsername: post.author.username ?? "",
+          content: JSON.stringify(post.content),
+          id: post.id,
+          title: post.title,
+          currentVote: voteType,
+          createdat: post.createdAt,
+        };
+
+        await redis.hset(`post: ${postId}`, cachePayload);
       }
+
+      return new Response("OK");
     }
-  } catch (error) {}
+
+    await db.vote.create({
+      data: {
+        type: voteType,
+        userId: session.user.id,
+        postId,
+      },
+    });
+
+    // recount the votes to classify posts as high engagement
+    const votesAmount = post.votes.reduce((acc, vote) => {
+      if (vote.type === "UP") return acc + 1;
+      if (vote.type === "DOWN") return acc - 1;
+      return acc;
+    }, 0);
+
+    if (votesAmount >= CACHE_AFTER_UPVOTES) {
+      const cachePayload: CachedPost = {
+        authorUsername: post.author.username ?? "",
+        content: JSON.stringify(post.content),
+        id: post.id,
+        title: post.title,
+        currentVote: voteType,
+        createdat: post.createdAt,
+      };
+      await redis.hset(`post: ${postId}`, cachePayload);
+    }
+    return new Response("OK");
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return new Response("Invalid request data passed", { status: 422 });
+    }
+
+    // handle all other errors
+    return new Response("Could not register your vote. Try again later.", {
+      status: 500,
+    });
+  }
 }
