@@ -1,15 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import useCustomToast from "@/hooks/use-custom-toast";
 import { usePrevious } from "@mantine/hooks";
-import axios from "axios";
-import { type VoteType } from "@prisma/client";
+import axios, { AxiosError } from "axios";
+import { VoteType } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { ArrowBigDown, ArrowBigUp } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { PostVoteRequest } from "@/lib/validators/vote";
+import useCustomToast from "@/hooks/use-custom-toast";
+import { toast } from "@/hooks/use-toast";
 
 import { Button } from "../ui/Button";
 
@@ -42,6 +43,37 @@ export default function PostVoteClient({
       };
 
       await axios.patch("/api/subreddit/post/vote", payload);
+    },
+    onError: (err, VoteType) => {
+      if (VoteType === "UP") setVotesAmount((prev) => prev - 1);
+      else setVotesAmount((prev) => prev + 1);
+
+      // reset current vote
+      setCurrentVote(prevVote);
+      if (err instanceof AxiosError) {
+        if (err.response?.status === 401) {
+          return loginToast();
+        }
+      }
+
+      return toast({
+        title: "Something went wrong",
+        description: "Your vote was not registered. Try again later",
+        variant: "destructive",
+      });
+    },
+    onMutate: (type: VoteType) => {
+      if (currentVote === type) {
+        setCurrentVote(undefined);
+        if (type === "UP") setVotesAmount((prev) => prev - 1);
+        else if (type === "DOWN") setVotesAmount((prev) => prev + 1);
+      } else {
+        setCurrentVote(type);
+        if (type === "UP")
+          setVotesAmount((prev) => prev + (currentVote ? 2 : 1));
+        else if (type === "DOWN")
+          setVotesAmount((prev) => prev - (currentVote ? 2 : 1));
+      }
     },
   });
 

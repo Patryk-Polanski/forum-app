@@ -9,7 +9,7 @@ import { redis } from "@/lib/reddis";
 
 export async function PATCH(req: Request) {
   try {
-    const body = req.json();
+    const body = await req.json();
 
     const { postId, voteType } = PostVoteValidator.parse(body);
 
