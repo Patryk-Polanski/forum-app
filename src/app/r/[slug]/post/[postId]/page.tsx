@@ -12,6 +12,7 @@ import { buttonVariants } from "@/components/ui/Button";
 import PostVoteServer from "@/components/post-vote/PostVoteServer";
 import { formatTimeToNow } from "@/lib/utils";
 import EditorOutput from "@/components/EditorOutput";
+import CommentsSection from "@/components/CommentsSection";
 
 interface PageProps {
   params: {
@@ -73,6 +74,14 @@ export default async function PostPage({ params }: PageProps) {
           </h1>
 
           <EditorOutput content={post?.content ?? cachedPost.content} />
+
+          <Suspense
+            fallback={
+              <Loader2 className="w-5 h-5 animate-spin text-zinc-500" />
+            }
+          >
+            <CommentsSection postId={post?.id ?? cachedPost.id} />
+          </Suspense>
         </div>
       </div>
     </div>
