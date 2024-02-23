@@ -80,6 +80,7 @@ export default async function PostPage({ params }: PageProps) {
               <Loader2 className="w-5 h-5 animate-spin text-zinc-500" />
             }
           >
+            {/* @ts-expect-error server component */}
             <CommentsSection postId={post?.id ?? cachedPost.id} />
           </Suspense>
         </div>
