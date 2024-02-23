@@ -6,12 +6,22 @@ import { ExtendedComment } from "@/types/db";
 import { formatTimeToNow } from "@/lib/utils";
 
 import UserAvatar from "./UserAvatar";
+import CommentVotes from "./CommentVotes";
+import { CommentVote } from "@prisma/client";
 
 interface PostCommentProps {
   comment: ExtendedComment;
+  votesAmount: number;
+  currentVote: CommentVote | undefined;
+  postId: string;
 }
 
-export default function PostComment({ comment }: PostCommentProps) {
+export default function PostComment({
+  comment,
+  votesAmount,
+  currentVote,
+  postId,
+}: PostCommentProps) {
   const commentRef = useRef<HTMLDivElement | null>(null);
   return (
     <div ref={commentRef} className="flex flex-col">
@@ -35,6 +45,14 @@ export default function PostComment({ comment }: PostCommentProps) {
       </div>
 
       <p className="text-sm text-zinc-900 mt-2">{comment.text}</p>
+
+      <div className="flex gap-2 items-center">
+        <CommentVotes
+          commentId={comment.id}
+          initialVotesAmount={votesAmount}
+          initialVote={currentVote}
+        />
+      </div>
     </div>
   );
 }
