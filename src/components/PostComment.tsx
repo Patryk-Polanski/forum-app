@@ -17,6 +17,7 @@ import { MessageSquare } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { Label } from "./ui/Label";
 import { Textarea } from "./ui/Textarea";
+import { toast } from "@/hooks/use-toast";
 
 interface PostCommentProps {
   comment: ExtendedComment;
@@ -50,6 +51,17 @@ export default function PostComment({
         payload
       );
       return data;
+    },
+    onError: () => {
+      return toast({
+        title: "Something went wrong",
+        description: "Posting comment failed. Try again",
+        variant: "destructive",
+      });
+    },
+    onSuccess: () => {
+      router.refresh();
+      setIsReplying(false);
     },
   });
 
