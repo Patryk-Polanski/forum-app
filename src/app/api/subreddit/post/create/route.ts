@@ -39,7 +39,6 @@ export async function POST(req: Request) {
 
     return new Response("OK");
   } catch (error) {
-    console.log("🚀 ~ POST ~ error:", error);
     if (error instanceof z.ZodError) {
       return new Response("Invalid request data passed", { status: 422 });
     }
