@@ -39,7 +39,7 @@ export default function UserNameForm({ user }: UserNameFormProps) {
   });
   const router = useRouter();
 
-  const {} = useMutation({
+  const { mutate: updateUsername, isLoading } = useMutation({
     mutationFn: async ({ name }: UsernameRequest) => {
       const payload: UsernameRequest = { name };
       const { data } = await axios.patch(`/api/username`, payload);
@@ -71,7 +71,7 @@ export default function UserNameForm({ user }: UserNameFormProps) {
   });
 
   return (
-    <form onSubmit={handleSubmit(() => {})}>
+    <form onSubmit={handleSubmit((e) => updateUsername(e))}>
       <Card>
         <CardHeader>
           <CardTitle>Your username</CardTitle>
@@ -99,7 +99,7 @@ export default function UserNameForm({ user }: UserNameFormProps) {
           </div>
         </CardContent>
         <CardFooter>
-          <Button>Change name</Button>
+          <Button isLoading={isLoading}>Change name</Button>
         </CardFooter>
       </Card>
     </form>
